@@ -1,0 +1,287 @@
+body {
+    background-color: #E5E5E5;
+    font-family: "Roboto";
+}
+
+$default_border: 1px solid black;
+
+%button_style {
+    border: $default_border;
+    background-color: white;
+    padding: 5px;
+    border-radius: 7%;
+    box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+    cursor: pointer;
+}
+
+%reset {
+    margin: 0;
+    padding: 0;
+}
+
+.settings {
+    display: flex;
+    justify-content: center;
+    background-color: rgba( 0, 0, 0, .7);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+    &__active {
+        opacity: 1;
+        visibility: visible;
+    }
+    &__inner {
+        margin-top: 50px;
+        width: 273px;
+        height: 319px;
+        background-color: white;
+        padding: 8px;
+        border-radius: 3%;
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            &-close {
+                border: none;
+                background-color: white;
+                cursor: pointer;
+            }
+        }
+        &-form {
+            display: grid;
+            grid-template-columns: 227px 32px;
+            grid-template-rows: 32px;
+            grid-column-gap: 8px;
+            &-btn {
+                border: $default_border;
+                background-color: white;
+                @extend %button_style;
+            }   
+            &-input {
+                border: $default_border;
+            }
+        }
+    }
+}
+
+.authorization {
+    display: flex;
+    justify-content: center;
+    background-color: rgba( 0, 0, 0, .7);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+    &__active {
+        opacity: 1;
+        visibility: visible;
+    }
+    &__inner {
+        margin-top: 50px;
+        width: 273px;
+        height: 319px;
+        background-color: white;
+        padding: 8px;
+        border-radius: 3%;
+        &-enter {
+            color: black;
+            cursor: pointer;
+        }
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            &-close {
+                border: none;
+                background-color: white;
+                cursor: pointer;
+            }
+        }
+        &-form {
+            display: grid;
+            grid-template-columns: 130px 130px;
+            grid-template-rows: 34px 34px;
+            grid-row-gap: 10px;
+            margin-bottom: 15px;
+            &-btn {
+                border: $default_border;
+                grid-row: 2 / 3;
+                background-color: white;
+                @extend %button_style;
+            }   
+            &-input {
+                grid-column: 1 / 3;
+                border: $default_border;
+            }
+        }
+    }
+}
+
+.accept {
+    display: flex;
+    justify-content: center;
+    background-color: rgba( 0, 0, 0, .7);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+    &__active {
+        opacity: 1;
+        visibility: visible;
+    }
+    &__inner {
+        margin-top: 50px;
+        width: 273px;
+        height: 319px;
+        background-color: white;
+        padding: 8px;
+        border-radius: 3%;
+        &-header {
+            display: flex;
+            justify-content: space-between;
+            &-close {
+                border: none;
+                background-color: white;
+                cursor: pointer;
+            }
+        }
+        &-form {
+            display: grid;
+            grid-template-columns: 130px 130px;
+            grid-template-rows: 34px 34px;
+            grid-row-gap: 10px;
+            &-btn {
+                border: $default_border;
+                grid-row: 2 / 3;
+                background-color: white;
+                @extend %button_style;
+            }   
+            &-input {
+                grid-column: 1 / 3;
+                border: $default_border;
+            }
+        }
+    }
+}
+
+.container {
+    width: 320px;
+    background-color: white;
+    margin: 0 auto;
+    padding: 7px;
+    box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+    .nav__menu {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 7px;
+        @extend %reset;
+        .nav__menu-item {list-style-type: none}
+
+        .settings__btn {
+            @extend %button_style;
+        }
+        .authorization__btn {
+            @extend %button_style;
+        }
+    }
+
+    .wrapper {
+        height: 437px;
+        overflow: auto;
+        border: $default_border;
+        border-radius: 2%;
+        box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+        padding: 8px;
+        .chat__space {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+            .posted__message {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 8px;
+                .posted__message-inner {
+                    display: grid;
+                    justify-items: end;
+                    background-color: #E5E5E5;
+                    padding: 8px;
+                    
+                    .message__inner {
+                        @extend %reset;
+                    }
+                    .message__time {
+                        @extend %reset;
+                    }
+                }
+            }
+    
+            .get__message {
+                display: flex;
+                justify-content: flex-start;
+                margin-top: 8px;
+                .get__message-inner {
+                    display: grid;
+                    justify-items: end;
+                    background-color: #E5E5E5;
+                    padding: 8px;
+                    .message__inner {
+                        @extend %reset;
+                    }
+                    .message__time {
+                        @extend %reset;
+                    }
+                }
+            }
+    
+            .posted__message {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 8px;
+                .posted__message-inner-unsend{
+                    display: grid;
+                    justify-items: end;
+                    background-color: #F6F6F6;
+                    ;
+                    padding: 8px;
+                    
+                    .message__inner {
+                        @extend %reset;
+                    }
+                    .message__time {
+                        @extend %reset;
+                    }
+                }
+            }
+        }
+    }
+    
+
+    .message__form {
+        display: grid;
+        grid-template-columns: 284px 29px;
+        grid-column-gap: 7px;
+        grid-template-rows: 32px;
+        margin-top: 7px;
+
+        .message__input {
+            border: $default_border;
+        }
+        .send__btn {
+            grid-column: 2;
+            border: $default_border;
+            background-color: white;
+        }
+    }
+}
+
