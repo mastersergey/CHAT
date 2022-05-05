@@ -8,7 +8,7 @@ const URL = {
     USER: 'https://mighty-cove-31255.herokuapp.com/api/user',
     ME: 'https://mighty-cove-31255.herokuapp.com/api/user/me',
     MESSAGES: 'https://mighty-cove-31255.herokuapp.com/api/messages',
-    WEBSOCKET: 'ws://mighty-cove-31255.herokuapp.com/websockets'
+    WEBSOCKET: 'wss://mighty-cove-31255.herokuapp.com/websockets'
 }
 
 const connectSocket = new WebSocket(`${URL.WEBSOCKET}?${Cookies.get('token')}`);
