@@ -1,3 +1,6 @@
+import Cookies from "js-cookie";
+const token = Cookies.get('token')
+
 export const MODALS = {
     SETTINGS: {
         MODAL: document.querySelector('.settings'),
@@ -13,24 +16,40 @@ export const MODALS = {
     },
     ACCEPT: {
         MODAL: document.querySelector('.accept'),
+        OPEN_BUTTON: document.querySelector('.authorization__inner-enter'),
         INPUT: document.querySelector('.accept__inner-form-input'),
         FORM: document.querySelector('.accept__inner-form')
     },
 
     OPEN(event) {
         event.preventDefault();
-        if (event.target.classList.contains('settings__btn')) {
+        const isAuthorizationButton = event.target.classList.contains('authorization__btn');
+        const isSettingsButton = event.target.classList.contains('settings__btn');
+        const isAcceptButton = event.target.classList.contains('authorization__inner-enter');
+        if (isSettingsButton) {
         MODALS.SETTINGS.MODAL.classList.add('settings__active');
-        } else if (event.target.classList.contains('authorization__btn')) {
-            MODALS.AUTHORIZATION.MODAL.classList.add('authorization__active');
+        } else if (isAuthorizationButton) {
+
+            if (token) {
+                Cookies.remove('token');
+                Cookies.remove('email');
+                MODALS.AUTHORIZATION.OPEN_BUTTON.textContent = 'Войти'
+            } else {
+                MODALS.AUTHORIZATION.MODAL.classList.add('authorization__active');
+            }
+
+        } else if(isAcceptButton) {
+            MODALS.ACCEPT.MODAL.classList.add('accept__active');
         }
     },
     CLOSE(event) {
-        const isSettingsModal =  event.target.classList.contains('settings__active') || event.target.classList.contains('settings__inner-header-close');
-        const isAuthorizationModal = event.target.classList.contains('authorization__active') || event.target.classList.contains('authorization__inner-header-close');
+        const targetClasses = event.target.classList;
+        const isSettingsModal =  targetClasses.contains('settings__active') || targetClasses.contains('settings__inner-header-close');
+        const isAuthorizationModal = targetClasses.contains('authorization__active') || targetClasses.contains('authorization__inner-header-close');
         if(isSettingsModal) {
             MODALS.SETTINGS.MODAL.classList.remove('settings__active');
         } else if (isAuthorizationModal) {
+            if (token === 'undefined') return;
             MODALS.AUTHORIZATION.MODAL.classList.remove('authorization__active');
         }
     }

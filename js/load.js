@@ -2,8 +2,8 @@ import Cookies from "js-cookie";
 import { chatSpaceWrapper, chatSpace } from "./view.js";
 import { MESSAGE } from "./message.js";
 import format from "date-fns/format";
-import { MESSAGE_TEMPLATES } from "./view.js";
-import {SOCKET} from './network.js'
+import { MESSAGE_TEMPLATES, MODALS } from "./view.js";
+import {token, currentUserEmail, SOCKET} from './network.js'
 
 
 async function loadMessageHistory() {
@@ -11,17 +11,29 @@ async function loadMessageHistory() {
     const response = await fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${Cookies.get('token')}`
+            'Authorization': `Bearer ${token}`
         }
     })
     const history = await response.json();
     const messages = history.messages;
     for (let item of messages) {
-        MESSAGE.STORAGE.unshift(item);
+        MESSAGE.STORAGE.push(item);
     }
+    MESSAGE.STORAGE.reverse()
     renderMessageHistory()
     chatSpace.scrollIntoView(false);
 }
+
+function init() {
+    const isUserAuthorized = !!token;
+    MODALS.AUTHORIZATION.OPEN_BUTTON.textContent = isUserAuthorized ? 'Выйти' : 'Войти';
+    if (isUserAuthorized) {
+        loadMessageHistory()
+    } else {
+        MODALS.AUTHORIZATION.MODAL.classList.add('authorization__active');
+    }
+}
+
 
 function renderMessageHistory(storage = MESSAGE.STORAGE, start = MESSAGE.START, end = MESSAGE.COUNT) {
     if (MESSAGE.COUNT >= MESSAGE.STORAGE.length) return;
@@ -31,7 +43,7 @@ function renderMessageHistory(storage = MESSAGE.STORAGE, start = MESSAGE.START, 
         const name = storage[message].user.name;
         const email = storage[message].user.email;
         
-        const isCurrentUserMessage = email === Cookies.get('email');
+        const isCurrentUserMessage = email === currentUserEmail;
         const template = isCurrentUserMessage ? MESSAGE_TEMPLATES.POST.cloneNode(true) : MESSAGE_TEMPLATES.GET.cloneNode(true);
 
         template.querySelector('.message__inner').textContent = `${name}: ${messageText}`;
@@ -55,4 +67,4 @@ function loadOnScroll() {
 
 
 
-export {loadOnScroll, loadMessageHistory, renderMessageHistory}
+export {loadOnScroll, init, loadMessageHistory}
