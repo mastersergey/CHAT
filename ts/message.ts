@@ -18,29 +18,42 @@ interface RenderMessage {
 }
 
 export class MessageBuilder implements RenderMessage {
-    template: HTMLTemplateElement;
+    template: Node;
     text: string;
     time: any;
     name: string;
+    renderMessageHandler
 
     constructor(template: HTMLTemplateElement, text: string, time: any, name: string) {
-        this.template = template;
+        this.template = template.content.cloneNode(true);;
         this.text = text;
         this.time = time;
         this.name = name;
+        this.renderMessageHandler = this.renderMessage.bind(this);
     }
 
     renderMessage() {
-        const currentTemplate: any = this.template.content.cloneNode(true);
+        const currentTemplate: any = this.template
         currentTemplate.querySelector('.message__inner').textContent = `${this.name}: ${this.text}`;
         currentTemplate.querySelector('.message__time').textContent = this.time;
     }
 }
 
+
+interface IMessageStorage {
+    createdAt: string;
+    text: string;
+    updatedAt: string;
+    user: {
+        email: string;
+        name: string;
+    };
+}
+
 export const MESSAGE_STORAGE = {
-    STORAGE: [],
-    START: 0,
-    COUNT: 20
+    STORAGE: [] as any,
+    START: 0 as number,
+    COUNT: 20 as number
 }
 
 

@@ -3,16 +3,16 @@ import format from "date-fns/format";
 import { LINK, token, currentUserEmail } from "./network";
 import { MessageBuilder, MESSAGE_TEMPLATES, chatSpace, FORM } from "./message";
 
-const socketConnection = new ReconnectingWebSocket(`${LINK.WEBSOCKET}?${token}`);
+const socketConnection = new WebSocket(`${LINK.WEBSOCKET}?${token}`);
 
 interface SocketSend {
     sendMessage(message: string): void;
 }
 
 class Socket  implements SocketSend {
-    connectedSocket: ReconnectingWebSocket;
+    connectedSocket: WebSocket;
 
-    constructor(connectedSocket: ReconnectingWebSocket) {
+    constructor(connectedSocket: WebSocket) {
         this.connectedSocket = connectedSocket;
     }
 
@@ -32,7 +32,7 @@ export function getMessage(event: { data: string; }): void {
     const template: HTMLTemplateElement = isCurrentUserMessage ? MESSAGE_TEMPLATES.POST : MESSAGE_TEMPLATES.GET;
     const message = new MessageBuilder(template, text, date, userName)
 
-    message.renderMessage()
+    const messageUI = message.renderMessageHandler()
     chatSpace.append(message.template);
     if(isCurrentUserMessage) chatSpace.scrollIntoView(false);
 }

@@ -8,7 +8,8 @@ const LINK = {
     WEBSOCKET: 'wss://mighty-cove-31255.herokuapp.com/websockets' as string
 }
 
-const token: string | undefined = Cookies.get('token');
+
+const token: any = Cookies.get('token');
 const currentUserEmail: string | undefined = Cookies.get('email');
 
 function postEmail(email: string) {
@@ -54,6 +55,7 @@ async function saveMessageHistory(url: string, token: string) {
     for (let item of messages) {
         MESSAGE_STORAGE.STORAGE.push(item);
     }
+    console.log(messages[0])
 }
 
 export {LINK, token, currentUserEmail, postEmail, patchUsername, saveMessageHistory}

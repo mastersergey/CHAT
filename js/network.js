@@ -1,94 +1,77 @@
-import Cookies from "js-cookie";
-import { format } from 'date-fns';
-import ReconnectingWebSocket from "reconnecting-websocket";
-import { MESSAGE_TEMPLATES, MODALS ,chatSpace } from './view.js';
-import {Message} from './message.js';
-import { EmailError } from "./error.js";
-
-
-const URL = {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.saveMessageHistory = exports.patchUsername = exports.postEmail = exports.currentUserEmail = exports.token = exports.LINK = void 0;
+const js_cookie_1 = __importDefault(require("js-cookie"));
+const message_1 = require("./message");
+const LINK = {
     USER: 'https://mighty-cove-31255.herokuapp.com/api/user',
     ME: 'https://mighty-cove-31255.herokuapp.com/api/user/me',
     MESSAGES: 'https://mighty-cove-31255.herokuapp.com/api/messages',
     WEBSOCKET: 'wss://mighty-cove-31255.herokuapp.com/websockets'
-}
-
-const token = Cookies.get('token');
-const currentUserEmail = Cookies.get('email');
-const connectSocket = new ReconnectingWebSocket(`${URL.WEBSOCKET}?${token}`);
-
-const SOCKET = {
-    sendMessage(message) {
-        connectSocket.send(JSON.stringify({text: message}))
-    },
-}
-
-
-
-function getMessage(event) {
-    const data = JSON.parse(event.data)
-    const text = data.text;
-    const userName = data.user.name;
-    const date = format(new Date(data.createdAt), 'kk:mm');
-    const isCurrentUserMessage = data.user.email === currentUserEmail;
-    const template = isCurrentUserMessage ? MESSAGE_TEMPLATES.POST : MESSAGE_TEMPLATES.GET;
-    const message = new Message(template, text, date, userName)
-
-    message.createMessage()
-    chatSpace.append(message.template);
-    if(isCurrentUserMessage) chatSpace.scrollIntoView(false);
-}
-
-
+};
+exports.LINK = LINK;
+const token = js_cookie_1.default.get('token');
+exports.token = token;
+const currentUserEmail = js_cookie_1.default.get('email');
+exports.currentUserEmail = currentUserEmail;
 function postEmail(email) {
-    Cookies.set('email', email,{expires: 30});
+    js_cookie_1.default.set('email', email, { expires: 30 });
     try {
-        fetch(URL.USER, {
+        fetch(LINK.USER, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({email: email})
-        })
-    } catch(e) {
+            body: JSON.stringify({ email: email })
+        });
+    }
+    catch (e) {
         alert(e.name);
     }
 }
-
-async function emailResponse(token) {
-    try {
-    const response = await fetch(URL.ME, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-        })
-    const user = await response.json(); 
-    const userEmail = user.email;
-        if (userEmail) {
-            Cookies.set('email', userEmail, {expires: 30})
-        } else {
-            throw new EmailError('Не удалось получить почту');
-        }
-    } catch(e) {
-        alert(`${e.name}:${e.text}`);
-    }
-}
-
+exports.postEmail = postEmail;
 function patchUsername(username, token) {
     try {
-        fetch(URL.USER, {
+        fetch(LINK.USER, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({name: username})
-        })
-    } catch(e) {
+            body: JSON.stringify({ name: username })
+        });
+    }
+    catch (e) {
         alert(e.name);
     }
 }
-
-
-export {postEmail, patchUsername, getMessage, emailResponse, currentUserEmail, connectSocket, SOCKET, URL, token}
+exports.patchUsername = patchUsername;
+function saveMessageHistory(url, token) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const history = yield response.json();
+        const messages = history.messages;
+        for (let item of messages) {
+            message_1.MESSAGE_STORAGE.STORAGE.push(item);
+        }
+        console.log(messages[0]);
+    });
+}
+exports.saveMessageHistory = saveMessageHistory;

@@ -37,26 +37,33 @@ interface ModalActions {
 
 class Modal implements ModalActions {
     UI_ELEMENTS: IModal;
-    type: string;
+    modal: string;
+    openHandler
+    closeHandler
 
-    constructor(UI_ELEMENTS: IModal, type: string) {
+
+    constructor(UI_ELEMENTS: IModal, modal: string) {
         this.UI_ELEMENTS = UI_ELEMENTS;
-        this.type = type;
+        this.modal = modal;
+        this.openHandler = this.open.bind(this);
+        this.closeHandler = this.close.bind(this);
     }
 
     open(): void {
-        this.UI_ELEMENTS.main.classList.add(`${this.type}__active`);
+        const activeModal: string = `${this.modal}__active`;
+        this.UI_ELEMENTS.main.classList.add(activeModal);
     }
 
     close(event: any): void {
         const target = event.target;
-        const isEventClose = target.classList.contains(`${this.type}__active`) || target.classList.contains(`${this.type}__inner-header-close`);
-        if (isEventClose) this.UI_ELEMENTS.main.classList.remove(`${this.type}__active`)
+        const isEventClose = target.classList.contains(`${this.modal}__active`) || target.classList.contains(`${this.modal}__inner-header-close`);
+        if (isEventClose) this.UI_ELEMENTS.main.classList.remove(`${this.modal}__active`)
+        console.log(this.UI_ELEMENTS.main.classList)
     }
 }
 
 const settingsModal = new Modal(MODALS.SETTINGS, 'settings');
 const authorizationModal = new Modal(MODALS.AUTHORIZATION, 'authorization')
-const acceptModal = new Modal(MODALS.SETTINGS, 'accept')
+const acceptModal = new Modal(MODALS.ACCEPT, 'accept')
 
 export {settingsModal, authorizationModal, acceptModal}

@@ -1,44 +1,33 @@
-import { MODALS, FORM } from './view.js';
-import Cookies from 'js-cookie';
-import {postEmail, patchUsername, SOCKET, token, emailResponse} from './network.js'
-import { loadMessageHistory } from './load.js';
-
-
-
-function postMessage(event) {
-    event.preventDefault();
-    const input = FORM.INPUT;
-    if(!input.value) return;
-    SOCKET.sendMessage(input.value);
-
-    input.value = '';
-}
-
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.codeResponse = exports.saveToken = exports.setUsername = void 0;
+const network_1 = require("./network");
+const modal_1 = require("./modal");
+const js_cookie_1 = __importDefault(require("js-cookie"));
+const network_2 = require("./network");
 function codeResponse(event) {
-    event.preventDefault()
-    const input = MODALS.AUTHORIZATION.INPUT;
-    postEmail(input.value)
+    event.preventDefault();
+    const input = modal_1.MODALS.AUTHORIZATION.input;
+    (0, network_1.postEmail)(input.value);
     input.value = '';
-    MODALS.AUTHORIZATION.MODAL.classList.toggle('authorization__active')
-    MODALS.ACCEPT.MODAL.classList.toggle('accept__active');
+    modal_1.MODALS.AUTHORIZATION.main.classList.toggle('authorization__active');
+    modal_1.MODALS.ACCEPT.main.classList.toggle('accept__active');
 }
-
+exports.codeResponse = codeResponse;
 function saveToken(event) {
     event.preventDefault();
-    const input = MODALS.ACCEPT.INPUT;
-    Cookies.set('token', input.value, {expires: 30});
-    emailResponse(input.value);
-    loadMessageHistory()
-    MODALS.ACCEPT.MODAL.classList.toggle('accept__active');
+    const input = modal_1.MODALS.ACCEPT.input;
+    js_cookie_1.default.set('token', input.value, { expires: 30 });
+    modal_1.MODALS.ACCEPT.main.classList.toggle('accept__active');
 }
-
+exports.saveToken = saveToken;
 function setUsername(event) {
     event.preventDefault();
-    const input = MODALS.SETTINGS.INPUT;
+    const input = modal_1.MODALS.SETTINGS.input;
     const username = input.value;
-    patchUsername(username, token)
+    (0, network_1.patchUsername)(username, network_2.token);
 }
-
-
-export {postMessage, setUsername, saveToken, codeResponse}
+exports.setUsername = setUsername;

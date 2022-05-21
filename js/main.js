@@ -1,22 +1,19 @@
-import { MODALS, FORM, chatSpaceWrapper } from './view.js';
-import { postMessage, setUsername, saveToken, codeResponse } from './formActions.js';
-import { init, loadOnScroll } from './load.js';
-import { connectSocket, getMessage} from './network.js';
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', init)
-chatSpaceWrapper.addEventListener('scroll', loadOnScroll)
-MODALS.ACCEPT.FORM.addEventListener('submit', saveToken);
-MODALS.SETTINGS.FORM.addEventListener('submit', setUsername);
-MODALS.AUTHORIZATION.FORM.addEventListener('submit', codeResponse);
-connectSocket.addEventListener('message', getMessage);
-FORM.CURRENT.addEventListener('submit', postMessage);
-MODALS.ACCEPT.OPEN_BUTTON.addEventListener('click', MODALS.OPEN)
-MODALS.SETTINGS.OPEN_BUTTON.addEventListener('click', MODALS.OPEN);
-MODALS.AUTHORIZATION.OPEN_BUTTON.addEventListener('click', MODALS.OPEN);
-MODALS.SETTINGS.MODAL.addEventListener('click', MODALS.CLOSE);
-MODALS.AUTHORIZATION.MODAL.addEventListener('click', MODALS.CLOSE);
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const modal_1 = require("./modal");
+const formActions_1 = require("./formActions");
+const load_1 = require("./load");
+const socket_1 = require("./socket");
+const message_1 = require("./message");
+document.addEventListener('DOMContentLoaded', load_1.loadMessageHistory);
+message_1.chatSpaceWrapper.addEventListener('scroll', load_1.loadOnScroll);
+socket_1.SOCKET.connectedSocket.addEventListener('message', socket_1.getMessage);
+message_1.FORM.CURRENT.addEventListener('submit', socket_1.postMessage);
+modal_1.authorizationModal.UI_ELEMENTS.form.addEventListener('submit', formActions_1.codeResponse);
+modal_1.authorizationModal.UI_ELEMENTS.openButton.addEventListener('click', modal_1.authorizationModal.openHandler);
+modal_1.authorizationModal.UI_ELEMENTS.main.addEventListener('click', modal_1.authorizationModal.closeHandler);
+modal_1.settingsModal.UI_ELEMENTS.form.addEventListener('submit', formActions_1.setUsername);
+modal_1.settingsModal.UI_ELEMENTS.openButton.addEventListener('click', modal_1.settingsModal.openHandler);
+modal_1.settingsModal.UI_ELEMENTS.main.addEventListener('click', modal_1.settingsModal.closeHandler);
+modal_1.acceptModal.UI_ELEMENTS.form.addEventListener('submit', formActions_1.saveToken);
+modal_1.acceptModal.UI_ELEMENTS.openButton.addEventListener('click', modal_1.acceptModal.open);

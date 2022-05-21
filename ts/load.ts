@@ -6,25 +6,36 @@ import { currentUserEmail, saveMessageHistory, token, LINK } from "./network";
 function renderMessageHistory(storage = MESSAGE_STORAGE.STORAGE, start = MESSAGE_STORAGE.START, end = MESSAGE_STORAGE.COUNT) {
     if (MESSAGE_STORAGE.COUNT >= MESSAGE_STORAGE.STORAGE.length) return;
     for(let message = start; message < end; message++) {
-        const messageText = storage[message].text;
+         const messageText = storage[message].text;
         const messageTime = format(new Date(storage[message].createdAt), 'kk:mm')
-        const name = storage[message].user.name;
-        const email = storage[message].user.email;
+        const name: string = storage[message].user.name;
+        const email:string = storage[message].user.email;
         
         const isCurrentUserMessage = email === currentUserEmail;
-        const template: any = isCurrentUserMessage ? MESSAGE_TEMPLATES.POST.cloneNode(true) : MESSAGE_TEMPLATES.GET.cloneNode(true);
+        const template: any = isCurrentUserMessage ? MESSAGE_TEMPLATES.POST.content.cloneNode(true) : MESSAGE_TEMPLATES.GET.content.cloneNode(true);
 
         template.querySelector('.message__inner').textContent = `${name}: ${messageText}`;
         template.querySelector('.message__time').textContent = messageTime;
 
-        chatSpace.prepend(template);
+        chatSpace.prepend(template); 
     }
     MESSAGE_STORAGE.START += 20;
     MESSAGE_STORAGE.COUNT += 20;
 }
 
-function loadMessageHistory(): void {
-    saveMessageHistory(LINK.MESSAGES, token);
+async function loadMessageHistory() {
+    const response = await fetch(LINK.MESSAGES, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    const history = await response.json();
+    const messages = history.messages;
+    for (let item of messages) {
+        MESSAGE_STORAGE.STORAGE.push(item);
+    }
+    MESSAGE_STORAGE.STORAGE.reverse();
     renderMessageHistory()
 }
 
